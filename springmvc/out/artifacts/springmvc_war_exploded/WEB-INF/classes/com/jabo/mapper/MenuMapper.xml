@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jabo.mapper.MenuMapper">
+    <resultMap id="menuTree" type="MenuVO">
+        <id column="menu_id" property="menuId"></id>
+        <result column="menu_name" property="menuName"></result>
+        <result column="url" property="url"></result>
+        <result column="icon" property="icon"></result>
+        <collection property="children" select="queryMenuByPCode" ofType="MenuVO" column="menu_code"/>
+    </resultMap>
+    <select id="getMenuTree" resultMap="menuTree">
+        select *
+        from menus
+        where is_delete = 0
+          and is_enable = 1
+          and parent_code = '0'
+        ORDER BY sort
+    </select>
+
+    <select id="queryMenuByPCode" resultType="MenuVO">
+        select *
+        from menus
+        where is_delete = 0
+          and is_enable = 1
+          and parent_code = #{menu_code}
+        ORDER BY sort
+    </select>
+</mapper>
