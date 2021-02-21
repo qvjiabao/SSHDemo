@@ -30,6 +30,7 @@
           <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jdbc:5.1.9.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-tx:5.1.9.RELEASE" />
+          <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.75" />
         </element>
       </element>
     </root>
