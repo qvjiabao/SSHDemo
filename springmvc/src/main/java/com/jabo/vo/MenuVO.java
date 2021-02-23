@@ -27,9 +27,24 @@ public class MenuVO  {
     private String url;
 
     /**
+     * 菜单编码
+     */
+    private String menuCode;
+
+    /**
+     * 父编码
+     */
+    private String parentCode;
+
+    /**
      * 菜单图标
      */
     private String icon;
+
+    /**
+     * 排序
+     */
+    private int sort;
 
     /**
      * 子菜单

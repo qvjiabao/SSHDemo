@@ -16,6 +16,7 @@
         e.console && console.error && console.error("Layui hint: " + t)
     }, i = "undefined" != typeof opera && "[object Opera]" === opera.toString(), u = {
         layer: "modules/layer",
+        treeTable: "modules/treeTable",
         laydate: "modules/laydate",
         laypage: "modules/laypage",
         laytpl: "modules/laytpl",

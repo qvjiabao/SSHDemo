@@ -8,8 +8,12 @@
         <result column="menu_name" property="menuName"></result>
         <result column="url" property="url"></result>
         <result column="icon" property="icon"></result>
+        <result column="menu_Code" property="menuCode"></result>
+        <result column="parent_Code" property="parentCode"></result>
+        <result column="sort" property="sort"></result>
         <collection property="children" select="queryMenuByPCode" ofType="MenuVO" column="menu_code"/>
     </resultMap>
+
     <select id="getMenuTree" resultMap="menuTree">
         select *
         from menus
@@ -27,4 +31,21 @@
           and parent_code = #{menu_code}
         ORDER BY sort
     </select>
+
+    <select id="getMenuList" resultType="MenuVO">
+        select *
+        from menus
+        where is_delete = 0
+          and is_enable = 1
+        ORDER BY sort
+    </select>
+
+    <update id="delMenu" parameterType="map">
+        update menus
+        set is_delete        = 1,
+            update_date      = #{updateData},
+            update_user_name = #{updateUserName},
+            update_cn_name   = #{updateCnName}
+        where menu_id = #{menuId}
+    </update>
 </mapper>
