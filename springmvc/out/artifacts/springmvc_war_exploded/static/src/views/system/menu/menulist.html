@@ -1,0 +1,124 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>系统管理</cite></a>
+        <a><cite>菜单管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">菜单名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="menuName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit lay-filter="LAY-app-contlist-search">
+                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <div style="padding-bottom: 10px;">
+                <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">
+                    <i class="layui-icon layui-icon-addition layuiadmin-button-btn"></i>添加
+                </button>
+            </div>
+            <table id="demoTreeTb"></table>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
+                        class="layui-icon layui-icon-edit"></i>编辑</a>
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i
+                        class="layui-icon layui-icon-delete"></i>删除</a>
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['treeTable', 'admin', 'form'], function () {
+        let $ = layui.jquery;
+        let treeTable = layui.treeTable
+            , view = layui.view
+            , admin = layui.admin
+            , form = layui.form;
+
+        //监听搜索
+        form.on('submit(LAY-app-contlist-search)', function (data) {
+            let field = data.field;
+            insTb.filterData(field.menuName);   // 根据关键字模糊搜索
+        });
+
+        treeTable.on('tool(demoTreeTb)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('您确定删除吗', function (index) {
+                    $.post("/menu/delMenu", {menuId: data.name}, function (res) {
+                        if (res.success) {
+                            //删除成功
+                            obj.del();
+                            layer.close(index);
+                        }
+                    });
+                });
+            } else if (obj.event === 'edit') {
+                layer.alert('编辑行：<br>' + JSON.stringify(data))
+            }
+        });
+
+        // 渲染树形表格
+        let insTb = treeTable.render({
+            elem: '#demoTreeTb',
+            url: '/menu/list',
+            tree: {
+                iconIndex: 1,           // 折叠图标显示在第几列
+                isPidData: true,        // 是否是id、pid形式数据
+                idName: 'menuCode',  // id字段名称
+                pidName: 'parentCode'     // pid字段名称
+            },
+            cols: [[
+                {type: 'numbers'},
+                {field: 'title', title: '菜单名称', width: '200px'},
+                {field: 'icon', title: '图标', width: '200px'},
+                {field: 'jump', title: '菜单地址'},
+                {field: 'sort', title: '排序', width: '70px', align: 'center'},
+                {width: '150px', toolbar: '#barDemo', align: 'center'},
+            ]]
+        });
+
+        //事件
+        let active = {
+            add: function () {
+                admin.popup({
+                    title: '添加用户'
+                    , area: ['500px', '450px']
+                    , id: 'LAY-popup-user-add'
+                    , success: function (layero, index) {
+                        view(this.id).render('system/menu/addmenu').done(function () {
+                            form.render(null, 'layuiadmin-form-useradmin');
+                            //监听提交
+                            form.on('submit(LAY-user-front-submit)', function (data) {
+                                let field = data.field; //获取提交的字段
+                                //提交 Ajax 成功后，关闭当前弹层并重载表格
+                                //$.ajax({});
+                                layui.table.reload('LAY-user-manage'); //重载表格
+                                layer.close(index); //执行关闭
+                            });
+                        });
+                    }
+                });
+            }
+        };
+
+        $('.layui-btn.layuiadmin-btn-useradmin').on('click', function () {
+            let type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
