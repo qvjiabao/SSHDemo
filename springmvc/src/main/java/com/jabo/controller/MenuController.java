@@ -33,7 +33,12 @@ public class MenuController {
     }
 
     @PostMapping("/delMenu")
-    public R delMenu(@Param("menuId") int menuId) {
+    public R delMenu(int menuId, String menuCode) {
+
+        List<MenuVO> menuVOS = menuService.queryMenuByPCode(menuCode);
+        if (menuVOS.size() > 0) {
+            return R.fail("当前菜单存在子集，删除失败！");
+        }
         boolean success = menuService.delMenu(menuId);
         return R.data(success);
     }

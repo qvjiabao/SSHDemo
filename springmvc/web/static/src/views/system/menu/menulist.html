@@ -58,11 +58,13 @@
             let data = obj.data;
             if (obj.event === 'del') {
                 layer.confirm('您确定删除吗？', function (index) {
-                    $.post("/menu/delMenu", {menuId: data.name}, function (res) {
+                    $.post("/menu/delMenu", {menuId: data.name, menuCode: data.menuCode}, function (res) {
                         if (res.success) { //删除成功
                             obj.del();
-                            layer.close(index);
+                        } else {
+                            layer.msg(res.msg);
                         }
+                        layer.close(index);
                     });
                 });
             } else if (obj.event === 'edit') {

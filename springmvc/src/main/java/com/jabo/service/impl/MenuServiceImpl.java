@@ -26,6 +26,7 @@ public class MenuServiceImpl implements IMenuService {
         return menuMapper.getMenuList();
     }
 
+
     @Override
     public boolean delMenu(int menuId) {
 
@@ -36,5 +37,10 @@ public class MenuServiceImpl implements IMenuService {
         map.put("updateCnName", "曲佳宝");
 
         return menuMapper.delMenu(map);
+    }
+
+    @Override
+    public List<MenuVO> queryMenuByPCode(String menuCode) {
+        return menuMapper.queryMenuByPCode(menuCode);
     }
 }
