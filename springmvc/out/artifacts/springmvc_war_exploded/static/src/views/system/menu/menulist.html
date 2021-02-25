@@ -17,8 +17,8 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <button class="layui-btn" lay-submit lay-filter="LAY-app-contlist-search">
-                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>查询
+                    <button class="layui-btn" lay-submit lay-filter="LAY-app-search">
+                        查询
                     </button>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="layui-card-body">
             <div style="padding-bottom: 10px;">
                 <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">
-                    <i class="layui-icon layui-icon-addition layuiadmin-button-btn"></i>添加
+                    添加
                 </button>
             </div>
             <table id="demoTreeTb"></table>
@@ -49,7 +49,7 @@
             , form = layui.form;
 
         //监听搜索
-        form.on('submit(LAY-app-contlist-search)', function (data) {
+        form.on('submit(LAY-app-search)', function (data) {
             let field = data.field;
             insTb.filterData(field.menuName);   // 根据关键字模糊搜索
         });
@@ -57,18 +57,50 @@
         treeTable.on('tool(demoTreeTb)', function (obj) {
             let data = obj.data;
             if (obj.event === 'del') {
-                layer.confirm('您确定删除吗？', function (index) {
+                layer.confirm('您确定删除【' + data.title + '】吗？', function (index) {
                     $.post("/menu/delMenu", {menuId: data.name, menuCode: data.menuCode}, function (res) {
                         if (res.success) { //删除成功
                             obj.del();
-                        } else {
-                            layer.msg(res.msg);
                         }
+                        layer.msg(res.msg);
                         layer.close(index);
                     });
                 });
             } else if (obj.event === 'edit') {
-                layer.alert('编辑行：<br>' + JSON.stringify(data))
+                admin.popup({
+                    title: '编辑菜单'
+                    , area: ['600px', '490px']
+                    , id: 'LAY-popup-menu-add'
+                    , success: function (layero, index) {
+                        view(this.id).render('system/menu/addmenu').done(function () {
+                            $.get("/menu/getMenu/" + data.menuCode, null, function (res) {
+                                form.val('component-form-menu'
+                                    , {
+                                        "menuId": res.data.name
+                                        , "menuName": res.data.title
+                                        , "menuCode": res.data.menuCode
+                                        , "parentCode": res.data.parentCode
+                                        , "url": res.data.jump
+                                        , "parentName": res.data.parentName
+                                        , "icon": res.data.icon
+                                        , "sort": res.data.sort
+                                    });
+                            });
+
+                            //监听提交
+                            form.on('submit(LAY-user-front-submit)', function (data) {
+                                let field = data.field; //获取提交的字段
+                                $.post("/menu/saveMenu", field, function (res) {
+                                    layer.msg(res.msg);
+                                    if (res.success) { //删除成功
+                                        insTb.refresh();  // 刷新(异步模式)
+                                        layer.close(index); //执行关闭
+                                    }
+                                });
+                            });
+                        });
+                    }
+                });
             }
         });
 
@@ -79,8 +111,8 @@
             tree: {
                 iconIndex: 1,           // 折叠图标显示在第几列
                 isPidData: true,        // 是否是id、pid形式数据
-                idName: 'menuCode',  // id字段名称
-                pidName: 'parentCode'     // pid字段名称
+                idName: 'menuCode',     // id字段名称
+                pidName: 'parentCode'   // pid字段名称
             },
             cols: [[
                 {type: 'numbers'},
@@ -96,19 +128,22 @@
         let active = {
             add: function () {
                 admin.popup({
-                    title: '添加用户'
-                    , area: ['500px', '450px']
-                    , id: 'LAY-popup-user-add'
+                    title: '添加菜单'
+                    , area: ['600px', '490px']
+                    , id: 'LAY-popup-menu-add'
                     , success: function (layero, index) {
                         view(this.id).render('system/menu/addmenu').done(function () {
-                            form.render(null, 'layuiadmin-form-useradmin');
+                            form.render(null, 'component-form-menu');
                             //监听提交
                             form.on('submit(LAY-user-front-submit)', function (data) {
                                 let field = data.field; //获取提交的字段
-                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                //$.ajax({});
-                                layui.table.reload('LAY-user-manage'); //重载表格
-                                layer.close(index); //执行关闭
+                                $.post("/menu/saveMenu", field, function (res) {
+                                    layer.msg(res.msg);
+                                    if (res.success) { //删除成功
+                                        insTb.refresh();  // 刷新(异步模式)
+                                        layer.close(index); //执行关闭
+                                    }
+                                });
                             });
                         });
                     }

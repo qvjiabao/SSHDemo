@@ -25,6 +25,13 @@ public interface MenuMapper extends BaseMapper<MenuModel> {
     List<MenuVO> getMenuList();
 
     /**
+     * 根据Id获取菜单
+     *
+     * @return
+     */
+    MenuVO queryMenuByCode(@Param("menuCode") String menuCode);
+
+    /**
      * 根据编码获取子集菜单
      *
      * @param menuCode 菜单编码

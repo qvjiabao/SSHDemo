@@ -1,6 +1,7 @@
 package com.jabo.controller;
 
 import com.jabo.controller.core.R;
+import com.jabo.pojo.MenuModel;
 import com.jabo.service.IMenuService;
 import com.jabo.service.IUserService;
 import com.jabo.vo.MenuVO;
@@ -25,6 +26,13 @@ public class MenuController {
         return R.data(menuTree);
     }
 
+    @GetMapping("/getMenu/{menuCode}")
+    public R<MenuVO> userMenu(@PathVariable("menuCode") String menuCode) {
+
+        MenuVO menuVO = menuService.queryMenuByCode(menuCode);
+        return R.data(menuVO);
+    }
+
     @GetMapping("/list")
     public R<List<MenuVO>> list() {
 
@@ -41,5 +49,11 @@ public class MenuController {
         }
         boolean success = menuService.delMenu(menuId);
         return R.data(success);
+    }
+
+    @PostMapping("/saveMenu")
+    public R saveMenu(MenuModel model) {
+        boolean success = menuService.saveMenu(model);
+        return success ? R.data(true) : R.fail("操作失败！");
     }
 }

@@ -33,11 +33,19 @@
     </select>
 
     <select id="getMenuList" resultType="MenuVO">
-        select *
-        from menus
-        where is_delete = 0
-          and is_enable = 1
+        SELECT A.*, B.menu_name parentName
+        FROM menus A
+                 LEFt JOIN menus B ON A.parent_code = B.menu_code
+        where A.is_delete = 0
+          and A.is_enable = 1
         ORDER BY sort
+    </select>
+
+    <select id="queryMenuByCode" resultType="MenuVO">
+        SELECT A.*, B.menu_name parentName
+        FROM menus A
+                 LEFt JOIN menus B ON A.parent_code = B.menu_code
+        WHERE A.menu_code = #{menuCode}
     </select>
 
     <update id="delMenu" parameterType="map">
@@ -46,6 +54,55 @@
             update_date      = #{updateData},
             update_user_name = #{updateUserName},
             update_cn_name   = #{updateCnName}
+        where menu_id = #{menuId}
+    </update>
+
+    <insert id="addModel" parameterType="MenuModel">
+        insert
+        menus(menu_name,menu_code,parent_code,url,icon,sort,is_enable,is_delete,create_date,create_user_name,create_cn_name)
+        values (
+        #{menuName},
+        #{menuCode},
+        #{parentCode},
+        #{url},
+        #{icon},
+        #{sort},
+        #{isEnable},
+        #{isDelete},
+        #{createDate},
+        #{createUserName},
+        #{createCnName}
+        )
+    </insert>
+
+    <update id="updateModel" parameterType="MenuModel">
+        update menus
+        <set>
+            <if test="menuName != null and menuName !=''">
+                ,menu_name = #{menuName}
+            </if>
+            <if test="parentCode != null">
+                ,parent_code = #{parentCode}
+            </if>
+            <if test="url != null">
+                ,url = #{url}
+            </if>
+            <if test="icon != null">
+                ,icon = #{icon}
+            </if>
+            <if test="sort != null">
+                ,sort = #{sort}
+            </if>
+            <if test="updateDate != null">
+                ,update_date = #{updateDate}
+            </if>
+            <if test="updateCnName != null and updateCnName != ''">
+                ,update_cn_name = #{updateCnName}
+            </if>
+            <if test="updateUserName != null and updateUserName != ''">
+                ,update_user_name = #{updateUserName}
+            </if>
+        </set>
         where menu_id = #{menuId}
     </update>
 </mapper>

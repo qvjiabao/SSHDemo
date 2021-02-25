@@ -37,6 +37,11 @@ public class MenuVO  {
     private String parentCode;
 
     /**
+     * 父名称
+     */
+    private String parentName;
+
+    /**
      * 菜单图标
      */
     private String icon;
