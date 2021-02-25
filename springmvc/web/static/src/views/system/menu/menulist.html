@@ -133,7 +133,7 @@
                     , id: 'LAY-popup-menu-add'
                     , success: function (layero, index) {
                         view(this.id).render('system/menu/addmenu').done(function () {
-                            form.render(null, 'component-form-menu');
+                            form.val('component-form-menu', {"menuId": 0});
                             //监听提交
                             form.on('submit(LAY-user-front-submit)', function (data) {
                                 let field = data.field; //获取提交的字段

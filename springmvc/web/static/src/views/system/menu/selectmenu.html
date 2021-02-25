@@ -1,0 +1,64 @@
+<div class="layui-card layadmin-header">
+    <div class="layui-breadcrumb" lay-filter="breadcrumb">
+        <a lay-href="">主页</a>
+        <a><cite>系统管理</cite></a>
+        <a><cite>菜单管理</cite></a>
+    </div>
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-form layui-card-header layuiadmin-card-header-auto" lay-filter="app-content-list">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">菜单名称</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="menuName" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" lay-submit lay-filter="LAY-app-search">
+                        查询
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body">
+            <table id="selectmenutab"></table>
+        </div>
+    </div>
+</div>
+
+<script>
+    layui.use(['treeTable', 'admin', 'form'], function () {
+        let $ = layui.jquery;
+        let treeTable = layui.treeTable
+            , view = layui.view
+            , admin = layui.admin
+            , form = layui.form;
+
+        //监听搜索
+        form.on('submit(LAY-app-search)', function (data) {
+            let field = data.field;
+            insTb.filterData(field.menuName);   // 根据关键字模糊搜索
+        });
+
+        // 渲染树形表格
+        let insTb = treeTable.render({
+            elem: '#selectmenutab',
+            url: '/menu/list',
+            tree: {
+                iconIndex: 1,           // 折叠图标显示在第几列
+                isPidData: true,        // 是否是id、pid形式数据
+                idName: 'menuCode',     // id字段名称
+                pidName: 'parentCode'   // pid字段名称
+            },
+            cols: [[
+                {type: 'numbers'},
+                {field: 'title', title: '菜单名称'},
+                {field: 'sort', title: '排序', width: '70px', align: 'center'}
+            ]]
+        });
+    });
+</script>
+

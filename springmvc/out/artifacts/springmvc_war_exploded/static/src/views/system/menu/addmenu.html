@@ -8,8 +8,8 @@
                             <label class="layui-form-label">上级菜单：</label>
                             <div class="layui-input-block">
                                 <input type="text" name="parentName" placeholder=""
-                                       disabled autocomplete="off" class="layui-input">
-                                <input type="hidden" name="parenCode" placeholder=""
+                                       readonly autocomplete="off" class="layui-input">
+                                <input type="hidden" name="parentCode" placeholder=""
                                        autocomplete="off" class="layui-input">
                                 <input type="hidden" name="menuId" placeholder=""
                                        autocomplete="off" class="layui-input">
@@ -68,18 +68,36 @@
 </div>
 
 <script>
-    layui.use(['admin', 'form'], function () {
-        var $ = layui.$
-            , form = layui.form;
+    layui.use(['admin', 'form', 'treeTable'], function () {
+        let $ = layui.$
+            , admin = layui.admin
+            , view = layui.view
+            , treeTable = layui.treeTable;
 
         //事件
         let active = {
             add_menuClear: function () {
-                layer.msg("33234");
+                $("input[name='parentName']").val("");
+                $("input[name='parentCode']").val("");
             },
 
             add_selectMenu: function () {
-                layer.msg("选择菜单");
+                console.log(123122222222);
+                admin.popup({
+                    title: '选择菜单'
+                    , area: ['800px', '550px']
+                    , id: 'popup-selectmenu'
+                    , success: function (layero, index) {
+                        view(this.id).render('system/menu/selectmenu').done(function () {
+                            // 监听行单击事件
+                            treeTable.on('rowDouble(selectmenutab)', function (obj) {
+                                $("input[name='parentName']").val(obj.data.title);
+                                $("input[name='parentCode']").val(obj.data.menuCode);
+                                layer.close(index);
+                            });
+                        });
+                    }
+                });
             }
         };
 
