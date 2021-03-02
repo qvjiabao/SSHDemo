@@ -4,6 +4,7 @@ import com.jabo.pojo.base.BaseModel;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BaseMapper<T extends BaseModel> {
 
@@ -15,5 +16,4 @@ public interface BaseMapper<T extends BaseModel> {
 
     T queryModelById(@Param("id") int id);
 
-    List<T> queryAllModel();
 }

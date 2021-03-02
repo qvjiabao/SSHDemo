@@ -6,6 +6,7 @@ import com.jabo.service.IMenuService;
 import com.jabo.vo.MenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public class MenuServiceImpl implements IMenuService {
     }
 
     @Override
+    @Transactional
     public boolean saveMenu(MenuModel model) {
         boolean result;
         if (model.getMenuId() == 0) {

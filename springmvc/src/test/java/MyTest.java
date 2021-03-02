@@ -9,11 +9,5 @@ public class MyTest {
 
     @Test
     public void test(){
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-        UserServiceImpl bean = applicationContext.getBean(UserServiceImpl.class);
-
-        for (UserModel books : bean.queryAllUser()) {
-            System.out.println(books);
-        }
     }
 }

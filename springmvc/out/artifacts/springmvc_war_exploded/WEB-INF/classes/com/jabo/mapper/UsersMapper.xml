@@ -23,14 +23,61 @@
         where bookID = #{bookID}
     </update>
 
-    <select id="queryModelById" resultType="UserModel">
+    <select id="queryModelById" resultType="UserVO">
         select *
         from users
         where user_Id = #{id}
     </select>
 
-    <select id="queryAllModel" resultType="UserModel">
+    <select id="queryAllModel" resultType="UserModel" parameterType="map">
+        SELECT *
+        from users <where>
+        is_delete = 0
+        <choose>
+            <when test="userName != null">
+                and user_name like #{userName}
+            </when>
+            <when test="cnName != null">
+                and cn_name like #{cnName}
+            </when>
+            <when test="phoneNumber != null">
+                and phone_number like #{phoneNumber}
+            </when>
+            <when test="email != null">
+                and email like #{email}
+            </when>
+            <when test="sex != null">
+                and sex = #{sex}
+            </when>
+        </choose>
+    </where>
+    </select>
+
+    <select id="queryAllModelPage" resultType="UserVO" parameterType="map">
         SELECT *
         from users
+        <where>
+            is_delete = 0
+            <choose>
+                <when test="userName != null">
+                    and user_name like #{userName}
+                </when>
+                <when test="cnName != null">
+                    and cn_name like #{cnName}
+                </when>
+                <when test="phoneNumber != null">
+                    and phone_number like #{phoneNumber}
+                </when>
+                <when test="email != null">
+                    and email like #{email}
+                </when>
+                <when test="sex != null">
+                    and sex = #{sex}
+                </when>
+            </choose>
+        </where>
+        order by user_id desc
+            limit #{page}
+               , #{limit}
     </select>
 </mapper>

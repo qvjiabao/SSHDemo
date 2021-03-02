@@ -47,4 +47,7 @@ https://www.springframework.org/schema/context/spring-context.xsd">
         <!-- 给出需要扫描Dao接口包 -->
         <property name="basePackage" value="com.jabo.mapper"/>
     </bean>
+
+
+
 </beans>
