@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -19,25 +17,45 @@ public class UserServiceImpl implements IUserService {
     private UsersMapper usersMapper;
 
     @Override
-    public int addBook(UserModel user) {
-        return 0;
+    public boolean saveUser(UserModel user) {
+
+        if (user.getUserId() == 0) {
+            user.setUserCode(UUID.randomUUID().toString().toUpperCase().replaceAll("-", ""));
+            user.setCreateDate(new Date());
+            user.setIsDelete(false);
+            user.setIsEnable(true);
+            user.setCreateCnName("曲佳宝");
+            user.setCreateUserName("qujb8078");
+            return usersMapper.addModel(user) > 0;
+        } else {
+            user.setUpdateDate(new Date());
+            user.setUpdateCnName("曲佳宝");
+            user.setUpdateUserName("qujb8078");
+            return usersMapper.updateModel(user) > 0;
+        }
     }
 
     @Override
-    public int deleteUserById(int id) {
-        return 0;
-    }
-
-    @Override
-    public int updateBook(UserModel user) {
-        return 0;
+    public boolean deleteUserById(List<Integer> arrayUserId) {
+        boolean success = true;
+        try {
+            for (Integer item : arrayUserId) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", item);
+                map.put("updateData", new Date());
+                map.put("updateUserName", "qujb8078");
+                map.put("updateCnName", "曲佳宝");
+                usersMapper.deletedModelById(map);
+            }
+        } catch (Exception e) {
+            success = false;
+        }
+        return success;
     }
 
     @Override
     public UserVO queryUserById(int id) {
-        return null;
-        //UserVO userModel = usersMapper.queryModelById(id);
-        //return userModel;
+        return usersMapper.queryModelById(id);
     }
 
     @Override

@@ -10,10 +10,9 @@ public interface BaseMapper<T extends BaseModel> {
 
     int addModel(T t);
 
-    int deletedModelById(@Param("id") int id);
+    int deletedModelById(Map<String, Object> map);
 
     int updateModel(T t);
 
-    T queryModelById(@Param("id") int id);
 
 }

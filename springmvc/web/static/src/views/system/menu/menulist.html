@@ -139,7 +139,7 @@
                                 let field = data.field; //获取提交的字段
                                 $.post("/menu/saveMenu", field, function (res) {
                                     layer.msg(res.msg);
-                                    if (res.success) { //删除成功
+                                    if (res.success) {
                                         insTb.refresh();  // 刷新(异步模式)
                                         layer.close(index); //执行关闭
                                     }

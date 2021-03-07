@@ -3,7 +3,7 @@
         <div class="layui-card">
             <div class="layui-card-body">
                 <div class="layui-form" lay-filter="component-form-menu">
-                    <div class="layui-row layui-col-space10 layui-form-item">
+                    <div class="layui-form-item">
                         <div class="layui-col-xs8">
                             <label class="layui-form-label">上级菜单：</label>
                             <div class="layui-input-block">
@@ -24,10 +24,9 @@
                                 清空
                             </button>
                         </div>
-
                     </div>
-                    <div class="layui-row layui-col-space10 layui-form-item">
-                        <label class="layui-form-label">菜单名称：</label>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label red-required">菜单名称：</label>
                         <div class="layui-input-block">
                             <input type="text" name="menuName" placeholder=""
                                    lay-verify="required" autocomplete="off" class="layui-input">
@@ -48,7 +47,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">排序：</label>
+                        <label class="layui-form-label red-required">排序：</label>
                         <div class="layui-input-block">
                             <input type="number" name="sort" placeholder=""
                                    lay-verify="required" autocomplete="off" class="layui-input">

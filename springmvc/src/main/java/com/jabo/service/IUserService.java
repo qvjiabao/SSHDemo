@@ -8,22 +8,55 @@ import java.util.Map;
 
 public interface IUserService {
 
-    //增加一个Book
-    int addBook(UserModel user);
+    /**
+     * 新增用户
+     *
+     * @param user
+     * @return
+     */
+    boolean saveUser(UserModel user);
 
-    //根据id删除一个Book
-    int deleteUserById(int id);
+    /**
+     * 根据Id删除用户
+     *
+     * @param arrayUserId
+     * @return
+     */
+    boolean deleteUserById(List<Integer> arrayUserId);
 
-    //更新Book
-    int updateBook(UserModel user);
-
-    //根据id查询,返回一个Book
+    /**
+     * 根据Id查询用户
+     *
+     * @param id
+     * @return
+     */
     UserVO queryUserById(int id);
 
-    //查询全部Book,返回list集合
+    /**
+     * 查询所有用户
+     *
+     * @param userName
+     * @param cnName
+     * @param phoneNumber
+     * @param email
+     * @param sex
+     * @return
+     */
     List<UserVO> queryAllUser(String userName, String cnName, String phoneNumber
             , String email, String sex);
 
+    /**
+     * 查询所有用户分页
+     *
+     * @param page
+     * @param limit
+     * @param userName
+     * @param cnName
+     * @param phoneNumber
+     * @param email
+     * @param sex
+     * @return
+     */
     List<UserVO> queryAllModelPage(int page, int limit, String userName
             , String cnName, String phoneNumber, String email, String sex);
 }

@@ -57,11 +57,7 @@
                 <button class="layui-btn layuiadmin-btn-useradmin" data-type="batchdel">删除</button>
                 <button class="layui-btn layuiadmin-btn-useradmin" data-type="add">添加</button>
             </div>
-
             <table id="LAY-user-manage" lay-filter="LAY-user-manage"></table>
-            <script type="text/html" id="imgTpl">
-                <img style="display: inline-block; width: 50%; height: 100%;" src={{ d.avatar }}>
-            </script>
             <script type="text/html" id="table-useradmin-webuser">
                 <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i
                         class="layui-icon layui-icon-edit"></i>编辑</a>
@@ -123,34 +119,37 @@
         table.on('tool(LAY-user-manage)', function (obj) {
             var data = obj.data;
             if (obj.event === 'del') {
-                layer.prompt({
-                    formType: 1
-                    , title: '敏感操作，请验证口令'
-                }, function (value, index) {
-                    layer.close(index);
-
-                    layer.confirm('真的删除行么', function (index) {
-                        obj.del();
+                layer.confirm('您确定删除吗？', function (index) {
+                    $.post("/user/delUser", {arr: [data.userId]}, function (res) {
+                        if (res.success) { //删除成功
+                            obj.del();
+                        }
+                        layer.msg(res.msg);
                         layer.close(index);
                     });
                 });
             } else if (obj.event === 'edit') {
                 admin.popup({
                     title: '编辑用户'
-                    , area: ['500px', '450px']
+                    , area: ['750px', '570px']
                     , id: 'LAY-popup-user-add'
                     , success: function (layero, index) {
-                        view(this.id).render('user/user/userform', data).done(function () {
-                            form.render(null, 'layuiadmin-form-useradmin');
-
+                        view(this.id).render('system/users/adduser', data).done(function () {
+                            $.get("/user/info/" + data.userId, null, function (res) {
+                                res.data.birthday = layui.util.toDateString(res.data.birthday, "yyyy-MM-dd");
+                                res.data.entryTime = layui.util.toDateString(res.data.entryTime, "yyyy-MM-dd");
+                                form.val('layuiadmin-form-useradmin', res.data);
+                            });
                             //监听提交
                             form.on('submit(LAY-user-front-submit)', function (data) {
                                 var field = data.field; //获取提交的字段
-
-                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                //$.ajax({});
-                                layui.table.reload('LAY-user-manage'); //重载表格
-                                layer.close(index); //执行关闭
+                                $.post("/user/saveUser", field, function (res) {
+                                    layer.msg(res.msg);
+                                    if (res.success) {
+                                        layui.table.reload('LAY-user-manage'); //重载表格
+                                        layer.close(index); //执行关闭
+                                    }
+                                });
                             });
                         });
                     }
@@ -158,9 +157,7 @@
             }
         });
 
-
         form.render(null, 'layadmin-userfront-formlist');
-
         //监听搜索
         form.on('submit(LAY-user-front-search)', function (data) {
             var field = data.field;
@@ -180,44 +177,39 @@
                 if (checkData.length === 0) {
                     return layer.msg('请选择数据');
                 }
-
-                layer.prompt({
-                    formType: 1
-                    , title: '敏感操作，请验证口令'
-                }, function (value, index) {
-                    layer.close(index);
-
-                    layer.confirm('确定删除吗？', function (index) {
-
-                        //执行 Ajax 后重载
-                        /*
-                        admin.req({
-                          url: 'xxx'
-                          //,……
-                        });
-                        */
-                        table.reload('LAY-user-manage');
-                        layer.msg('已删除');
+                layer.confirm('您确定删除吗？', function (index) {
+                    $.post("/user/delUser", {
+                        arr: checkData.map(x => {
+                            return x.userId
+                        })
+                    }, function (res) {
+                        if (res.success) { //删除成功
+                            layui.table.reload('LAY-user-manage'); //重载表格
+                        }
+                        layer.msg(res.msg);
+                        layer.close(index);
                     });
                 });
             }
             , add: function () {
                 admin.popup({
                     title: '添加用户'
-                    , area: ['500px', '450px']
+                    , area: ['750px', '570px']
                     , id: 'LAY-popup-user-add'
                     , success: function (layero, index) {
-                        view(this.id).render('user/user/userform').done(function () {
+                        view(this.id).render('system/users/adduser').done(function () {
                             form.render(null, 'layuiadmin-form-useradmin');
 
                             //监听提交
                             form.on('submit(LAY-user-front-submit)', function (data) {
                                 var field = data.field; //获取提交的字段
-
-                                //提交 Ajax 成功后，关闭当前弹层并重载表格
-                                //$.ajax({});
-                                layui.table.reload('LAY-user-manage'); //重载表格
-                                layer.close(index); //执行关闭
+                                $.post("/user/saveUser", field, function (res) {
+                                    layer.msg(res.msg);
+                                    if (res.success) {
+                                        layui.table.reload('LAY-user-manage'); //重载表格
+                                        layer.close(index); //执行关闭
+                                    }
+                                });
                             });
                         });
                     }

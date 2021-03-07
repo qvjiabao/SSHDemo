@@ -2,8 +2,10 @@ package com.jabo.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.jabo.controller.core.R;
+import com.jabo.pojo.MenuModel;
 import com.jabo.pojo.UserModel;
 import com.jabo.service.IUserService;
+import com.jabo.vo.MenuVO;
 import com.jabo.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,5 +35,24 @@ public class UserController {
         hashMap.put("count", userService.queryAllUser(userName, cnName, phoneNumber, email, sex).size());
 
         return R.data(hashMap);
+    }
+
+    @PostMapping("/saveUser")
+    public R saveMenu(UserModel model) {
+        boolean success = userService.saveUser(model);
+        return success ? R.data(true) : R.fail("操作失败！");
+    }
+
+    @PostMapping("/delUser")
+    public R saveMenu(@RequestParam(value = "arr[]") List<Integer> arr) {
+        boolean success = userService.deleteUserById(arr);
+        return success ? R.data(true) : R.fail("操作失败！");
+    }
+
+    @GetMapping("/info/{userId}")
+    public R<UserVO> getUserInfo(@PathVariable("userId") Integer userId) {
+
+        UserVO userVO = userService.queryUserById(userId);
+        return R.data(userVO);
     }
 }
